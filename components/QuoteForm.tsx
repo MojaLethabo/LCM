@@ -4,6 +4,54 @@ import { useEffect, useRef, useState } from "react";
 import { eventTypes, site } from "@/lib/site";
 
 type Errors = { name?: string; phone?: string };
+type Values = ReturnType<typeof readValues>;
+
+function readValues(form: HTMLFormElement) {
+  const d = new FormData(form);
+  const g = (k: string) => String(d.get(k) ?? "").trim();
+  return {
+    name: g("name"),
+    phone: g("phone"),
+    type: g("type"),
+    date: g("date"),
+    guests: g("guests"),
+    message: g("message"),
+  };
+}
+
+// "2026-11-25" -> "25 November 2026" (parsed locally, so no timezone shift)
+function prettyDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return iso;
+  return new Date(y, m - 1, d).toLocaleDateString("en-ZA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function buildStory(v: Values) {
+  const type = v.type.trim();
+  const article = /^[aeiou]/i.test(type) ? "an" : "a";
+
+  let ask = type
+    ? `I'd like a quote for catering ${article} ${type.toLowerCase()}`
+    : "I'd like a quote for catering an event";
+  if (v.date) ask += ` on ${prettyDate(v.date)}`;
+  if (v.guests) ask += ` for about ${v.guests} guest${v.guests === "1" ? "" : "s"}`;
+  ask += ".";
+
+  const parts = [
+    `Hi ${site.name}, my name is ${v.name}.`,
+    ask,
+  ];
+  if (v.message) {
+    parts.push(/[.!?]$/.test(v.message) ? v.message : `${v.message}.`);
+  }
+  parts.push(`You can reach me on ${v.phone}. Thank you!`);
+
+  return parts.join(" ");
+}
 
 export default function QuoteForm() {
   const ref = useRef<HTMLFormElement>(null);
@@ -12,13 +60,7 @@ export default function QuoteForm() {
 
   useEffect(() => setToday(new Date().toISOString().slice(0, 10)), []);
 
-  const read = () => {
-    const d = new FormData(ref.current!);
-    const g = (k: string) => String(d.get(k) ?? "").trim();
-    return { name: g("name"), phone: g("phone"), type: g("type"), date: g("date"), guests: g("guests"), message: g("message") };
-  };
-
-  const validate = (v: ReturnType<typeof read>) => {
+  const validate = (v: Values) => {
     const e: Errors = {};
     if (!v.name) e.name = "Please enter your name";
     if (!v.phone) e.phone = "Please enter a phone number";
@@ -29,16 +71,14 @@ export default function QuoteForm() {
     return !e.name && !e.phone;
   };
 
-  const text = (v: ReturnType<typeof read>) =>
-    [`Name: ${v.name}`, `Phone: ${v.phone}`, `Event: ${v.type}`, `Date: ${v.date || "not set"}`, `Guests: ${v.guests || "not set"}`, "", v.message].join("\n");
-
   const send = (via: "whatsapp" | "email") => {
-    const v = read();
+    const v = readValues(ref.current!);
     if (!validate(v)) return;
+    const story = buildStory(v);
     if (via === "whatsapp") {
-      window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text(v))}`, "_blank", "noopener");
+      window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(story)}`, "_blank", "noopener");
     } else {
-      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent("Catering quote request")}&body=${encodeURIComponent(text(v))}`;
+      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(`Catering quote request from ${v.name}`)}&body=${encodeURIComponent(story)}`;
     }
   };
 

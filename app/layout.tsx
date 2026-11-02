@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   title: "LCM Catering | Corporate catering in Johannesburg",
   description:
     "Conferences, boardroom lunches, awards evenings and daily meal deliveries. Corporate catering in Johannesburg since 2009.",
+  icons: {
+    icon: "/logos/Logo2.jpeg",
+    shortcut: "/logos/Logo2.jpeg",
+    apple: "/logos/Logo2.jpeg",
+  },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };

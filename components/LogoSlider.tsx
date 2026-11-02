@@ -1,12 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { clients } from "@/lib/site";
 
 export default function LogoSlider() {
   const [perView, setPerView] = useState(4);
   const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(true);
   const last = clients.length - perView;
 
   useEffect(() => {
@@ -20,19 +19,19 @@ export default function LogoSlider() {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  const go = useCallback(
-    (d: number) => setIndex((i) => (i + d > last ? 0 : i + d < 0 ? last : i + d)),
-    [last],
-  );
-
   useEffect(() => {
-    if (!playing) return;
-    const t = setInterval(() => go(1), 3000);
+    const t = setInterval(
+      () => setIndex((i) => (i + 1 > last ? 0 : i + 1)),
+      3000,
+    );
     return () => clearInterval(t);
-  }, [playing, go]);
+  }, [last]);
 
   return (
     <div role="region" aria-roledescription="carousel" aria-label="Companies we cater for">
+      <style>{`
+        .vp, .track { border-top: 0 !important; }
+      `}</style>
       <div className="vp">
         <ul className="track" style={{ transform: `translateX(-${index * (100 / perView)}%)` }}>
           {clients.map((c) => (
@@ -46,12 +45,6 @@ export default function LogoSlider() {
             </li>
           ))}
         </ul>
-      </div>
-      <div className="ctl">
-        <button type="button" onClick={() => go(-1)}>Previous</button>
-        <button type="button" onClick={() => go(1)}>Next</button>
-        <button type="button" onClick={() => setPlaying((p) => !p)}>{playing ? "Pause" : "Play"}</button>
-        <span className="pos">{index + 1} of {last + 1}</span>
       </div>
     </div>
   );

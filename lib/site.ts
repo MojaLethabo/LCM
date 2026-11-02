@@ -5,10 +5,11 @@ export const site = {
   phoneMainHref: "+27114064075",
   phoneMobile: "071 948 5977",
   phoneMobileHref: "+27719485977",
-  whatsapp: "27719485977",
+  whatsapp: "27650739340",
   email: "mac@lcmservices.co.za",
+  emailInfo: "info@lcmservices.co.za",
   contact: "Mac Tladi Lebeko",
-  address: "404 Southern Klipriviersberg, Steeledale, Johannesburg",
+  address: "404 Southern Kliprivierberg Road, Safic Business Park, Alberton, Johannesburg",
   year: 2026,
 };
 
@@ -62,16 +63,18 @@ export const gallery: { cls: string; caption: string; src?: string }[] = [
 
 // To show a logo, drop the file in /public/logos and set logo, e.g. "/logos/transnet-freight-rail.png".
 export const clients: { name: string; logo?: string }[] = [
-  { name: "Transnet Freight Rail" },
-  { name: "Transnet School of Rail" },
-  { name: "Aveng Grinaker-LTA" },
-  { name: "Group Five" },
-  { name: "Unitrans" },
-  { name: "Red Bull SA" },
-  { name: "ERWAT" },
-  { name: "Safic" },
-  { name: "Floorworx" },
-  { name: "Accentuate" },
+  { name: "Transnet Freight Rail", logo :"/partners/Transnet Freight Rail.png" },
+  { name: "Transnet School of Rail", logo :"/partners/Transnet School of Rail.png" },
+  { name: "Aveng Grinaker-LTA", logo :"/partners/Aveng Grinaker-LTA.jpg" },
+  { name: "Group Five", logo :"/partners/Group Five.jpg" },
+  { name: "Unitrans", logo :"/partners/Unitrans.png" },
+  { name: "Red Bull SA", logo :"/partners/Red Bull SA.jpg" },
+  { name: "ERWAT", logo :"/partners/ERWAT.png" },
+  { name: "Safic", logo :"/partners/Safic.jpg" },
+  { name: "Floorworx", logo :"/partners/Floorworx.png" },
+  { name: "Accentuate", logo :"/partners/Accentuate.png" },
+  { name: "Cobra Projects", logo :"/partners/Cobra Projects.jpg" },
+  { name: "Rolfes Group Companies", logo :"/partners/Rolfes Group Companies.png" },
 ];
 
 export const eventTypes = [
